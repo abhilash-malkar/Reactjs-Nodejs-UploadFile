@@ -5,16 +5,18 @@ function FileUpload() {
     const [file, setFile] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
+    const fetchFiles = async () => {
+        try {
+            const res = await axios.get('http://localhost:3001/files');
+            setUploadedFiles(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    
     useEffect(() => {
         // Fetch uploaded files when component mounts
-        const fetchFiles = async () => {
-            try {
-                const res = await axios.get('http://localhost:3001/files');
-                setUploadedFiles(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
+
         fetchFiles();
     }, []); // Run only once on component mount
 
@@ -36,6 +38,7 @@ function FileUpload() {
             console.log(res.data);
             // Update the list of uploaded files after successful upload
             setUploadedFiles([...uploadedFiles, res.data]);
+            fetchFiles();
         } catch (err) {
             console.error(err);
         }
